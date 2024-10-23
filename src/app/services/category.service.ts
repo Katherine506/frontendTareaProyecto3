@@ -1,17 +1,17 @@
 import { inject, Injectable, signal } from "@angular/core";
-import { BaseService } from "./base-service";
-import { ISearch, IUser } from "../interfaces";
-import { Observable, catchError, tap, throwError } from "rxjs";
+import { ICategory, ISearch } from "../interfaces";
 import { AlertService } from "./alert.service";
+import { AuthService } from "./auth.service";
+import { BaseService } from "./base-service";
 
 @Injectable({
   providedIn: "root",
 })
-export class UserService extends BaseService<IUser> {
-  protected override source: string = "users";
-  private userListSignal = signal<IUser[]>([]);
-  get users$() {
-    return this.userListSignal;
+export class CategoryService extends BaseService<ICategory> {
+  protected override source: string = "category";
+  private categoryListSignal = signal<ICategory[]>([]);
+  get categories$() {
+    return this.categoryListSignal;
   }
   public search: ISearch = {
     page: 1,
@@ -31,7 +31,7 @@ export class UserService extends BaseService<IUser> {
           { length: this.search.totalPages ? this.search.totalPages : 0 },
           (_, i) => i + 1
         );
-        this.userListSignal.set(response.data);
+        this.categoryListSignal.set(response.data);
       },
       error: (err: any) => {
         console.error("error", err);
@@ -39,8 +39,8 @@ export class UserService extends BaseService<IUser> {
     });
   }
 
-  save(user: IUser) {
-    this.add(user).subscribe({
+  save(category: ICategory) {
+    this.add(category).subscribe({
       next: (response: any) => {
         this.alertService.displayAlert(
           "success",
@@ -54,7 +54,7 @@ export class UserService extends BaseService<IUser> {
       error: (err: any) => {
         this.alertService.displayAlert(
           "error",
-          "An error occurred adding the user",
+          "An error occurred adding the category",
           "center",
           "top",
           ["error-snackbar"]
@@ -64,8 +64,8 @@ export class UserService extends BaseService<IUser> {
     });
   }
 
-  update(user: IUser) {
-    this.editCustomSource(`${user.id}`, user).subscribe({
+  update(category: ICategory) {
+    this.editCustomSource(`${category.id}`, category).subscribe({
       next: (response: any) => {
         this.alertService.displayAlert(
           "success",
@@ -79,7 +79,7 @@ export class UserService extends BaseService<IUser> {
       error: (err: any) => {
         this.alertService.displayAlert(
           "error",
-          "An error occurred updating the user",
+          "An error occurred updating the category",
           "center",
           "top",
           ["error-snackbar"]
@@ -89,8 +89,8 @@ export class UserService extends BaseService<IUser> {
     });
   }
 
-  delete(user: IUser) {
-    this.delCustomSource(`${user.id}`).subscribe({
+  delete(category: ICategory) {
+    this.delCustomSource(`${category.id}`).subscribe({
       next: (response: any) => {
         this.alertService.displayAlert(
           "success",
@@ -104,7 +104,7 @@ export class UserService extends BaseService<IUser> {
       error: (err: any) => {
         this.alertService.displayAlert(
           "error",
-          "An error occurred deleting the user",
+          "An error occurred deleting the category",
           "center",
           "top",
           ["error-snackbar"]
